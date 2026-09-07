@@ -52,7 +52,6 @@ services:
   - type: web
     name: rameerder-frontend
     runtime: static
-    region: frankfurt
     plan: free
 
     rootDir: rameerder-frontend
