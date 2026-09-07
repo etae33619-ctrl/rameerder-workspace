@@ -1,0 +1,46 @@
+databases:
+  - name: rameerder-db
+    databaseName: rameerder_db
+    user: rameerder_user
+    plan: free
+
+services:
+  # Backend Service
+  - type: web
+    name: rameerder-backend
+    env: python
+    region: frankfurt
+    plan: free
+    rootDir: rameerder-backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: rameerder-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 60
+      - key: BACKEND_CORS_ORIGINS
+        value: '["https://rameerder-frontend.onrender.com", "http://localhost:5173"]'
+
+  # Frontend Static Site
+  - type: static
+    name: rameerder-frontend
+    region: frankfurt
+    plan: free
+    rootDir: rameerder-frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: rameerder-backend
+          property: url
