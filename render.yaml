@@ -52,8 +52,6 @@ services:
   - type: web
     name: rameerder-frontend
     runtime: static
-    plan: free
-
     rootDir: rameerder-frontend
 
     buildCommand: npm ci && npm run build
@@ -68,3 +66,4 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
+
