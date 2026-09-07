@@ -18,12 +18,12 @@ export function ProductDetails() {
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [brand, setBrand] = useState<Brand | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [_reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<"description" | "specifications" | "reviews">("description");
+  const [_activeTab, setActiveTab] = useState<"description" | "specifications" | "reviews">("description");
 
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Card, CardHeader, CardTitle } from "../../components/ui/Card";
+import { Card} from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { customerApi } from "../../features/customer/customer.api";

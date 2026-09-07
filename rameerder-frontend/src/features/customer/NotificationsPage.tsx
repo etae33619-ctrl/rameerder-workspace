@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
-import { Card, CardContent } from "../../components/ui/Card";
+import { Card } from "../../components/ui/Card";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { customerApi } from "../../features/customer/customer.api";
 import { type Notification } from "../../features/customer/types";
