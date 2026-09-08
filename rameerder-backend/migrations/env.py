@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import os
 import asyncio
 from logging.config import fileConfig
@@ -10,9 +10,13 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from sqlmodel import SQLModel
 
-# --- ADDED THIS TO FIX THE MODULE NOT FOUND ERROR ---
-# Explicitly add the project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Explicitly add the backend project root to the Python path
+sys.path.insert(
+    0,
+    os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..")
+    ),
+)
 
 # Import application settings and models for metadata
 from app.core.config import settings
@@ -27,8 +31,39 @@ if config.config_file_name is not None:
 target_metadata = SQLModel.metadata
 
 
+def normalize_database_url(url: str) -> str:
+    """
+    Ensure PostgreSQL uses the asyncpg driver.
+
+    Render may provide:
+        postgresql://...
+
+    Local development may provide:
+        postgresql+asyncpg://...
+
+    SQLAlchemy async migrations require:
+        postgresql+asyncpg://...
+    """
+    if url.startswith("postgres://"):
+        return url.replace(
+            "postgres://",
+            "postgresql+asyncpg://",
+            1,
+        )
+
+    if url.startswith("postgresql://"):
+        return url.replace(
+            "postgresql://",
+            "postgresql+asyncpg://",
+            1,
+        )
+
+    return url
+
+
 def run_migrations_offline() -> None:
-    url = settings.DATABASE_URL
+    url = normalize_database_url(settings.DATABASE_URL)
+
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -41,17 +76,30 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+    )
+
     with context.begin_transaction():
         context.run_migrations()
 
 
 async def run_async_migrations() -> None:
-    # Safely inject the connection string from Pydantic config
-    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+    # Normalize Render's PostgreSQL URL so SQLAlchemy uses asyncpg.
+    database_url = normalize_database_url(settings.DATABASE_URL)
+
+    # Inject the normalized connection string into Alembic.
+    config.set_main_option(
+        "sqlalchemy.url",
+        database_url,
+    )
 
     connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        config.get_section(
+            config.config_ini_section,
+            {},
+        ),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
