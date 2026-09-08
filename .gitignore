@@ -1,0 +1,56 @@
+# ==============================
+# Environment files
+# ==============================
+.env
+.env.*
+!.env.example
+
+# ==============================
+# Python
+# ==============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+.venv/
+venv/
+env/
+ENV/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ==============================
+# Node
+# ==============================
+node_modules/
+dist/
+.vite/
+
+# ==============================
+# IDE
+# ==============================
+.idea/
+.vscode/
+
+# ==============================
+# OS
+# ==============================
+.DS_Store
+Thumbs.db
+
+# ==============================
+# Logs
+# ==============================
+*.log
+
+# ==============================
+# Coverage
+# ==============================
+.coverage
+htmlcov/
+# Local duplicate project copies
+/rameerder-workspace/
+/rameerder-workspace-backup-old/
